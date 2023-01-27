@@ -25,7 +25,7 @@ export const Button: ComponentStyleConfig = {
         bg: "blue.400",
       },
     },
-    ouline: {
+    outline: {
       color: "blue.500",
       border: "1px solid",
       boderColor: "blue.500",
