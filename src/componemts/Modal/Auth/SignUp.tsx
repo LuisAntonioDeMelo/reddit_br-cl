@@ -1,21 +1,41 @@
 import { AuthModalState } from "@/atoms/authModalAtom";
+import { auth } from "@/firebase/clientApp";
 import { Input, Button, Flex, Text } from "@chakra-ui/react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useSetRecoilState } from "recoil";
+import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 
 export const SignUp: React.FC = () => {
-  const [loginForm, setLoginForm] = useState({
+  const [signUpForm, setSignUpForm] = useState({
     email: "",
     password: "",
+    confirm: "",
   });
+
+  const [createUserWithEmailAndPassword, user, loading, userError] =
+    useCreateUserWithEmailAndPassword(auth);
+  const [error, setError] = useState("");
 
   const setAuthModalState = useSetRecoilState(AuthModalState);
 
   //Firebase logic
-  const onSubmit = () => {};
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event?.preventDefault();
+    if (error) setError("");
+    if (signUpForm.password !== signUpForm.confirm) {
+      setError("Passwords do not match");
+      return;
+    }
+    if (signUpForm.password.length < 8) {
+      setError("Password is to short");
+      return;
+    }
+
+    createUserWithEmailAndPassword(signUpForm.email, signUpForm.password);
+  };
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setLoginForm((prev) => ({
+    setSignUpForm((prev) => ({
       ...prev,
       [event.target.name]: event.target.value,
     }));
@@ -69,7 +89,7 @@ export const SignUp: React.FC = () => {
       />
       <Input
         required
-        name="configm"
+        name="confirm"
         placeholder="confirm password"
         type="password"
         mb={2}
@@ -89,7 +109,17 @@ export const SignUp: React.FC = () => {
         bg="gray.50"
         onChange={onChange}
       />
-      <Button width="100%" height="36px" mt={2} mb={2} type="submit">
+      <Text textAlign="center" color="red" fontSize="10pt">
+        {error}
+      </Text>
+      <Button
+        width="100%"
+        height="36px"
+        mt={2}
+        mb={2}
+        type="submit"
+        isLoading={loading}
+      >
         {" "}
         Sign Up
       </Button>
