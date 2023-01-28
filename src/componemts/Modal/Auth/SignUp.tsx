@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { useSetRecoilState } from "recoil";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 
+//1:40:29
 export const SignUp: React.FC = () => {
   const [signUpForm, setSignUpForm] = useState({
     email: "",
